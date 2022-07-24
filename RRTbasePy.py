@@ -1,5 +1,7 @@
 import random
 import math
+from tracemalloc import start
+from flask import copy_current_request_context
 import pygame
 
 
@@ -41,9 +43,15 @@ class RRTMap:
 
     def drawObs(self, obstacles):
         obstaclesList = obstacles.copy()
+        
         while (len(obstaclesList) > 0):
+            
             obstacle = obstaclesList.pop(0)
-            pygame.draw.rect(self.map, self.grey, obstacle)
+            print((obstacle[0],obstacle[1]), self.start)
+            centerX=obstacle[0]+(self.obsdim/2)
+            centerY=obstacle[1]+(self.obsdim/2)
+            pygame.draw.circle(self.map, self.grey, (centerX,centerY), self.nodeRad +15, 0)
+            
 
 
 class RRTGraph:
@@ -81,7 +89,9 @@ class RRTGraph:
             startgoalcol = True
             while startgoalcol:
                 upper = self.makeRandomRect()
+                print(upper[0], upper[1])
                 rectang = pygame.Rect(upper, (self.obsDim, self.obsDim))
+                
                 if rectang.collidepoint(self.start) or rectang.collidepoint(self.goal):
                     startgoalcol = True
                 else:
