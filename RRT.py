@@ -5,8 +5,8 @@ import time
 
 def main():
     dimensions =(480,640)
-    start=(197, 196)
-    goal=(485, 239)
+    start=(326,369)
+    goal=(530,245)
     obsdim=30
     obsnum=50
     iteration=0
@@ -56,8 +56,11 @@ if __name__ == '__main__':
     result=False
     while not result:
         try:
+            start = time.process_time()
             main()
             result=True
+            end = time.process_time()
+            print(end-start)
         except:
             result=False
 

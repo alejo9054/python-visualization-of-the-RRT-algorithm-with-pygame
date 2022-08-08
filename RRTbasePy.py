@@ -44,15 +44,20 @@ class RRTMap:
     def drawObs(self, obstacles):
         obstaclesList = obstacles.copy()
         
+        
+        
         while (len(obstaclesList) > 0):
             
             obstacle = obstaclesList.pop(0)
-            print((obstacle[0],obstacle[1]), self.start)
-            centerX=obstacle[0]+(self.obsdim/2)
-            centerY=obstacle[1]+(self.obsdim/2)
-            pygame.draw.circle(self.map, self.grey, (centerX,centerY), self.nodeRad +15, 0)
+            #print(obstacle, "obstacleees")
+            # print((obstacle[0],obstacle[1]), self.start, "obstacles")
+            # centerX=obstacle[0]+(self.obsdim/2)
+            # centerY=obstacle[1]+(self.obsdim/2)
+            centerX=obstacle[0]
+            centerY=obstacle[1]
+            pygame.draw.circle(self.map, self.grey, (centerX,centerY), obstacle[2], 0)
             
-
+        #pygame.draw.circle(self.map, self.Green, (366, 240), 44, 0)
 
 class RRTGraph:
     def __init__(self, start, goal, MapDimensions, obsdim, obsnum):
@@ -83,21 +88,35 @@ class RRTGraph:
         return (uppercornerx, uppercornery)
 
     def makeobs(self):
-        obs = []
-        for i in range(0, self.obsNum):
-            rectang = None
-            startgoalcol = True
-            while startgoalcol:
-                upper = self.makeRandomRect()
-                print(upper[0], upper[1])
-                rectang = pygame.Rect(upper, (self.obsDim, self.obsDim))
-                
-                if rectang.collidepoint(self.start) or rectang.collidepoint(self.goal):
-                    startgoalcol = True
-                else:
-                    startgoalcol = False
-            obs.append(rectang)
+        obs = [(273,100, 28),
+                (180,143, 30),
+                (236,154, 28),
+                (296,159, 28),
+                (137,203, 30),
+                (147,309, 28),
+                (193,312, 28),
+                (256,325, 28),
+                (390,240, 86),
+               
+               
+               ]
+        
+        
+        # for i in range(0, 2):
+        #     rectang = None
+        #     startgoalcol = True
+        #     while startgoalcol:
+        #         upper = self.makeRandomRect()
+        #         #print(upper[0], upper[1])
+        #         rectang = pygame.Rect(upper, (self.obsDim, self.obsDim))
+        #         print(rectang)
+        #         if rectang.collidepoint(self.start) or rectang.collidepoint(self.goal):
+        #             startgoalcol = True
+        #         else:
+        #             startgoalcol = False
+        #     obs.append(rectang)
         self.obstacles = obs.copy()
+        # print(obs)
         return obs
 
     def add_node(self, n, x, y):
@@ -143,8 +162,12 @@ class RRTGraph:
         (x, y) = (self.x[n], self.y[n])
         obs = self.obstacles.copy()
         while len(obs) > 0:
-            rectang = obs.pop(0)
-            if rectang.collidepoint(x, y):
+            circle = obs.pop(0)
+            #print(circle, "isfree")
+            distance = math.hypot(x - circle[0], y - circle[1])
+            # print(distance)
+            # if rectang.collidepoint(x, y):
+            if distance <= circle[2]:
                 self.remove_node(n)
                 return False
         return True
@@ -152,12 +175,13 @@ class RRTGraph:
     def crossObstacle(self, x1, x2, y1, y2):
         obs = self.obstacles.copy()
         while (len(obs) > 0):
-            rectang = obs.pop(0)
+            circle = obs.pop(0)
             for i in range(0, 101):
                 u = i / 100
                 x = x1 * u + x2 * (1 - u)
                 y = y1 * u + y2 * (1 - u)
-                if rectang.collidepoint(x, y):
+                distance = math.hypot(x - circle[0], y - circle[1])
+                if distance <= circle[2]:
                     return True
         return False
 
@@ -247,19 +271,19 @@ class RRTGraph:
         oldpath = self.getPathCoords()
         path = []
         for i in range(0, len(self.path) - 1):
-            print(i)
+            # print(i)
             if i >= len(self.path):
                 break
             x1, y1 = oldpath[i]
             x2, y2 = oldpath[i + 1]
-            print('---------')
-            print((x1, y1), (x2, y2))
+            # print('---------')
+            # print((x1, y1), (x2, y2))
             for i in range(0, 5):
                 u = i / 5
                 x = int(x2 * u + x1 * (1 - u))
                 y = int(y2 * u + y1 * (1 - u))
                 path.append((x, y))
-                print((x, y))
+                # print((x, y))
 
         return path
 
@@ -270,21 +294,21 @@ def makeRandomRect(self):
     uppercornery = int(random.uniform(0, self.maph - self.obsDim))
     return (uppercornerx, uppercornery)
 
-def makeobs(self):
-    obs = []
-    for i in range(0, self.obsNum):
-        rectang = None
-        startgoalcol = True
-        while startgoalcol:
-            upper = self.makeRandomRect()
-            rectang = pygame.Rect(upper, (self.obsDim, self.obsDim))
-            if rectang.collidepoint(self.start) or rectang.collidepoint(self.goal):
-                startgoalcol = True
-            else:
-                startgoalcol = False
-            obs.append(rectang)
-        self.obstacles = obs.copy()
-    return obs
+# def makeobs(self):
+#     obs = []
+#     for i in range(0, self.obsNum):
+#         rectang = None
+#         startgoalcol = True
+#         while startgoalcol:
+#             upper = self.makeRandomRect()
+#             rectang = pygame.Rect(upper, (self.obsDim, self.obsDim))
+#             if rectang.collidepoint(self.start) or rectang.collidepoint(self.goal):
+#                 startgoalcol = True
+#             else:
+#                 startgoalcol = False
+#             obs.append(rectang)
+#         self.obstacles = obs.copy()
+#     return obs
 
 
 
